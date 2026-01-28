@@ -22,6 +22,7 @@ Notes:
 
 `pip install --upgrade conan`
 
+
 Run the following commands to verify installation success:
 
 ```
@@ -75,7 +76,62 @@ We can then build the application from **Flightwave.App**:
     cmake -S . -B build/Release -DCMAKE_TOOLCHAIN_FILE="build/Release/conan_toolchain.cmake"
     cmake --build build/Release --config Release
 ```
+We should now have the cmake folder structure for **Flightwave.App**:
+```
+Flightwave.App/
+├── build/
+│   └── Debug/
+│   └── Release/
+├── src/
+│   └── main.cpp
+├── CMakeLists.txt
+├── conanfile.py
+```
+
+## Bumping Package Version
+
+#### Library Side:
+1. Modify source/include files in the IDE
+2. Version the package in conanfile.py `version = 2.0.0`
+3. Rebuild the package `conan create . --build=missing`
+4. Verify conan cache `conan list flightwave*`
+5. Push source to get `git push`
+
+#### Application Side:
+6. Update the conanfile.py `requires = "flightwave/2.0.0"`
+7. Reinstall packages:
+```
+    conan install . -s build_type=Debug --build=missing --output-folder=build/Debug
+    conan install . -s build_type=Release --build=missing --output-folder=build/Release
+```
+8. Rebuild the project 
+```
+    cmake --build build/Debug --config Debug
+    cmake --build build/Release --config Release
+```
+
+**Note:** 
+- There is no automatic switching between debug/release builds so you'll need to open the projects separately.
+- We can use `conan editable` to automatically update the application when we version the library source.
+
+
+## Future Work
+At some point I'd like to migrate the conan packages to [Conan Center](https://conan.io/center) as a remote package similar to [Nuget](https://www.nuget.org/). There is an approval process, but once the library in approved on we can reference the remote package with:
+
+```
+    conan remote add conancenter https://center.conan.io
+    conan install . -s build_type=Release --build=missing --output-folder=build/Release
+    cmake --build build/Release --config Release
+```
+
+I've also started some automation workflows using windows scripting (bat) but I think existing tools should be explored further before going further down the path of building my own workflow automation tools. 
+
+Golden Config Files:
+
+The current versions of `conanfile.py` and `CMakeLists.txt` are intended to be maintained and reused as golden files and modified on an as-needed basis. Plan to archive golden files for specific builds. 
 
 ## License
+This project is licensed under MIT License [LICENSE.md](LICENSE.md).
 
-This project is licensed under the MIT License [LICENSE.md](#LICENSE.md).
+## References
+This readme.md was created with the help of [Markdown Live Preview](https://markdownlivepreview.com/).
