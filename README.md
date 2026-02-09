@@ -114,6 +114,13 @@ Flightwave.App/
 - There is no automatic switching between debug/release builds so you'll need to open the projects separately.
 - We can use `conan editable` to automatically update the application when we version the library source.
 
+## Useful Conan Commands
+```
+// Remove from local cache:
+conan remove flightwave/* -c
+conan remove flightwave/1.0.0 -c
+
+```
 
 ## Future Work
 At some point I'd like to migrate the conan packages to [Conan Center](https://conan.io/center) as a remote package similar to [Nuget](https://www.nuget.org/). There is an approval process, but once the library in approved on we can reference the remote package with:
@@ -131,6 +138,7 @@ Golden Config Files:
 The current versions of `conanfile.py` and `CMakeLists.txt` are intended to be maintained and reused as golden files and modified on an as-needed basis. Plan to archive golden files for specific builds. 
 
 ## License
+
 This project is licensed under MIT License [LICENSE.md](LICENSE.md).
 
 ## References
